@@ -1,0 +1,3 @@
+REPO monk-kafka
+LOAD kafka.yaml stack.yaml
+RESOURCES files/server.properties
