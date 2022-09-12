@@ -62,7 +62,7 @@ kafka-common:
       env: KAFKA_ZOOKEEPER_CONNECT
       type: string
       # value: <- get-hostname("kafka/zoo1", "zookeeper") split(".dns.podman") join("") ":2181" concat-all
-      value: <- get-hostname("kafka/zoo1", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka/zoo2", "zookeeper") split(".dns.podman") join("") ":2182," get-hostname("kafka/zoo3", "zookeeper") split(".dns.podman") join("") ":2183" concat-all
+      value: <- get-hostname("kafka/zoo1", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka/zoo2", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka/zoo3", "zookeeper") split(".dns.podman") join("") ":2181" concat-all
     zookeeper-port:
       type: int
       value: 2181
@@ -100,8 +100,8 @@ zoo1:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
         - ALLOW_PLAINTEXT_LISTENER=yes
         - ALLOW_ANONYMOUS_LOGIN=yes
-      paths: 
-        - <- `${volume_local}:${volume_container}`
+      # paths: 
+      #   - <- `${volume_local}:${volume_container}`
   variables:
     defines: variables
     zookeeper-port:
@@ -136,8 +136,8 @@ zoo2:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
         - ALLOW_PLAINTEXT_LISTENER=yes
         - ALLOW_ANONYMOUS_LOGIN=yes
-      paths: 
-        - <- `${volume_local}:${volume_container}`
+      # paths: 
+      #   - <- `${volume_local}:${volume_container}`
   variables:
     defines: variables
     zookeeper-port:
@@ -172,8 +172,8 @@ zoo3:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
         - ALLOW_PLAINTEXT_LISTENER=yes
         - ALLOW_ANONYMOUS_LOGIN=yes
-      paths: 
-        - <- `${volume_local}:${volume_container}`
+      # paths: 
+      #   - <- `${volume_local}:${volume_container}`
   variables:
     defines: variables
     zookeeper-port:
