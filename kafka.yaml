@@ -54,7 +54,7 @@ kafka-common:
       value: 9092
     broker-internal-host-name:
       type: string
-      value: <- get-hostname("apache-kafka/kafka-broker-2", "kafka") split(".dns.podman") join("")
+      value: <- get-hostname("kafka/kafka-2", "kafka") split(".dns.podman") join("")
     broker-internal-port:
       type: int
       value: 29092
