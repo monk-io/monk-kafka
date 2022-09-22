@@ -1,18 +1,12 @@
+
 namespace: kafka
 
 stack:
   defines: process-group
   runnable-list:
+    - kafka/kafka-1
     - kafka/kafka-2
+    - kafka/kafka-3
     - kafka/zoo1
     - kafka/zoo2
     - kafka/zoo3
-
-    
-    
-
-
-
-
-
-
