@@ -172,7 +172,7 @@ zoo2:
         # - 3888
       environment:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
-        - ZOOKEEPER_SERVER_ID=1
+        - ZOOKEEPER_SERVER_ID=2
       paths: 
         - <- `${volume_local}:${volume_container}`
   variables:
@@ -214,7 +214,7 @@ zoo3:
         # - 3888
       environment:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
-        - ZOOKEEPER_SERVER_ID=1
+        - ZOOKEEPER_SERVER_ID=3
       paths: 
         - <- `${volume_local}:${volume_container}`
   variables:
