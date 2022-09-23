@@ -46,7 +46,7 @@ zoo-1:
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
-      value: <- get-hostname("kafka-cluster/zoo1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+      value: <- get-hostname("kafka-cluster/zoo-1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
     zookeeper-image:
       value: <- $zookeeper-image-tag
       type: string        
@@ -97,7 +97,7 @@ zoo-2:
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
-      value: <- get-hostname("kafka-cluster/zoo1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+      value: <- get-hostname("kafka-cluster/zoo-1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
     zookeeper-image:
       value: <- $zookeeper-image-tag
       type: string        
@@ -109,7 +109,7 @@ zoo-3:
       code: |
           exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
       period: 10
-      initialDelay: 5    
+      initialDelay: 5
   metadata:
     defines: metadata
     name: Apache Zookeper
@@ -148,7 +148,7 @@ zoo-3:
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
-      value: <- get-hostname("kafka-cluster/zoo1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+      value: <- get-hostname("kafka-cluster/zoo-1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
     zookeeper-image:
       value: <- $zookeeper-image-tag
       type: string      
@@ -178,7 +178,7 @@ kafka-common:
         - <- `0.0.0.0:${broker-internal-port}:${broker-internal-port}`
       environment:
         - <- `KAFKA_ADVERTISED_LISTENERS=INTERNAL://${broker-internal-host-name}:${broker-internal-port},PLAINTEXT_HOST://localhost:${broker-port}`
-        - <- `KAFKA_ZOOKEEPER_CONNECT= ${zookeeper-connects}`
+        - <- `KAFKA_ZOOKEEPER_CONNECT=${zookeeper-connects}`
         - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
         - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
         - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
@@ -199,10 +199,10 @@ kafka-common:
   depends:
     wait-for:
       runnables:
-        - kafka-cluster/zoo1
-        - kafka-cluster/zoo2
-        - kafka-cluster/zoo3
-      timeout: 60
+        - ./zoo-1
+        - ./zoo-2
+        - ./zoo-3
+      timeout: 30        
   variables:
     defines: variables
     broker-id:
@@ -220,7 +220,7 @@ kafka-common:
     zookeeper-connects:
       env: KAFKA_ZOOKEEPER_CONNECT
       type: string
-      value: <- get-hostname("kafka-cluster/zoo1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+      value: <- get-hostname("kafka-cluster/zoo-1", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka-cluster/zoo-2", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka-cluster/zoo-3", "zookeeper") split(".dns.podman") join("") ":2181" concat-all
     zookeeper-port:
       type: int
       value: 2181
