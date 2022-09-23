@@ -199,9 +199,9 @@ kafka-common:
   depends:
     wait-for:
       runnables:
-        - kafka-cluster//zoo1
-        - kafka-cluster//zoo2
-        - kafka-cluster//zoo3
+        - kafka-cluster/zoo1
+        - kafka-cluster/zoo2
+        - kafka-cluster/zoo3
       timeout: 60
   variables:
     defines: variables
@@ -257,4 +257,4 @@ kafka-3:
     broker-id: 3
     broker-port: 9094
     broker-internal-port: 29094
-    zookeeper-port: 2181      
+    zookeeper-port: 2181
