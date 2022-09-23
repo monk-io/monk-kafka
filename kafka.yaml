@@ -1,12 +1,168 @@
-namespace: kafka
+namespace: kafka-cluster
+
+zoo-1:
+  defines: runnable
+  version: latest
+  readiness:
+      code: |
+          exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
+      period: 10
+      initialDelay: 5  
+  metadata:
+    defines: metadata
+    name: Apache Zookeper
+    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
+    tags: configuration, services
+    website: https://zookeeper.apache.org/
+    source: https://github.com/apache/zookeeper
+    publisher: monk.io
+    icon: https://assets.monk.io/icons/zookeper.gif
+  containers:
+    defines: containers
+    zookeeper:
+      image: confluentinc/cp-zookeeper
+      image-tag: <- `${zookeeper-image}`
+      ports:
+        - <- `0.0.0.0:${zookeeper-port}:2181`
+        - 2888
+        - 3888   
+      environment:
+        - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
+        - ZOOKEEPER_SERVER_ID=1
+        - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=*
+      paths: 
+        - <- `${volume_local}:${volume_container}`
+  variables:
+    defines: variables
+    zookeeper-port:
+      type: int
+      value: 2181
+    volume_local:
+      type: string
+      value: <- `${moncc-volume-path}/zookeeper1`
+    volume_container:
+      type: string
+      value: "/opt/zookeeper-3.4.13/data"
+    zookeeper-servers:
+      env: ZOOKEEPER_SERVERS
+      type: string
+      value: <- get-hostname("kafka-cluster/zoo1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+    zookeeper-image:
+      value: <- $zookeeper-image-tag
+      type: string        
+
+zoo-2:
+  defines: runnable
+  version: latest
+  readiness:
+      code: |
+          exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
+      period: 10
+      initialDelay: 5    
+  metadata:
+    defines: metadata
+    name: Apache Zookeper
+    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
+    tags: configuration, services
+    website: https://zookeeper.apache.org/
+    source: https://github.com/apache/zookeeper
+    publisher: monk.io
+    icon: https://assets.monk.io/icons/zookeper.gif
+  containers:
+    defines: containers
+    zookeeper:
+      image: confluentinc/cp-zookeeper
+      image-tag: <- `${zookeeper-image}`
+      ports:
+        - <- `0.0.0.0:${zookeeper-port}:2181`
+        - 2888
+        - 3888
+      environment:
+        - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
+        - ZOOKEEPER_SERVER_ID=2
+        - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=*
+      paths: 
+        - <- `${volume_local}:${volume_container}`
+  variables:
+    defines: variables
+    zookeeper-port:
+      type: int
+      value: 2182
+    volume_local:
+      type: string
+      value: <- `${moncc-volume-path}/zookeeper1`
+    volume_container:
+      type: string
+      value: "/opt/zookeeper-3.4.13/data"
+    zookeeper-servers:
+      env: ZOOKEEPER_SERVERS
+      type: string
+      value: <- get-hostname("kafka-cluster/zoo1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+    zookeeper-image:
+      value: <- $zookeeper-image-tag
+      type: string        
+
+zoo-3:
+  defines: runnable
+  version: latest
+  readiness:
+      code: |
+          exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
+      period: 10
+      initialDelay: 5    
+  metadata:
+    defines: metadata
+    name: Apache Zookeper
+    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
+    tags: configuration, services
+    website: https://zookeeper.apache.org/
+    source: https://github.com/apache/zookeeper
+    publisher: monk.io
+    icon: https://assets.monk.io/icons/zookeper.gif
+  containers:
+    defines: containers
+    zookeeper:
+      image: confluentinc/cp-zookeeper
+      image-tag: <- `${zookeeper-image}`
+      ports:
+        - <- `0.0.0.0:${zookeeper-port}:2181`
+        - 2888
+        - 3888
+      environment:
+        - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
+        - ZOOKEEPER_SERVER_ID=3
+        - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=*
+      paths: 
+        - <- `${volume_local}:${volume_container}`
+  variables:
+    defines: variables
+    zookeeper-port:
+      type: int
+      value: 2183
+    volume_local:
+      type: string
+      value: <- `${moncc-volume-path}/zookeeper1`
+    volume_container:
+      type: string
+      value: "/opt/zookeeper-3.4.13/data"
+    zookeeper-servers:
+      env: ZOOKEEPER_SERVERS
+      type: string
+      value: <- get-hostname("kafka-cluster/zoo1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+    zookeeper-image:
+      value: <- $zookeeper-image-tag
+      type: string      
+
+
 
 
 kafka-common:
   defines: runnable
+  version: latest
   metadata:
     defines: metadata
     name: Apache Kafka
-    description: Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications. 
+    description: Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
     tags: streaming,data,analytics,integration,distributed
     website: https://kafka.apache.org/
     source: https://github.com/apache/kafka
@@ -15,9 +171,8 @@ kafka-common:
   containers:
     defines: containers
     kafka:
-      # bash: 'sleep 999'
-      image: confluentinc/cp-kafka:7.2.1
-      # image-tag: <- `${kafka-image}`
+      image: confluentinc/cp-kafka
+      image-tag: <- `${kafka-image}`
       ports:
         - <- `0.0.0.0:${broker-port}:${broker-port}`
         - <- `0.0.0.0:${broker-internal-port}:${broker-internal-port}`
@@ -31,158 +186,75 @@ kafka-common:
         - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
         - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
         - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
-        - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=100
+        - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=1000
         - KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR=1
+        - KAFKA_LOG4J_LOGGERS="kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+        - KAFKA_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer
+        - KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND=true
         - <- `CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS=${broker-internal-host-name}:${broker-internal-port}`
         - <- `CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT=${zookeeper-connects}`
         - CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS=1
         - CONFLUENT_METRICS_ENABLE=false
         - CONFLUENT_SUPPORT_CUSTOMER_ID=anonymous
-  # files:
-  #   advanced-config:
-  #     container: kafka
-  #     mode: 0644
-  #     path: /etc/kafka/server.properties
-  #     contents: <<< files/server.properties
+  depends:
+    wait-for:
+      runnables:
+        - kafka-cluster//zoo1
+        - kafka-cluster//zoo2
+        - kafka-cluster//zoo3
+      timeout: 60
   variables:
     defines: variables
     broker-id:
       type: int
-      value: 1
+      value: 2
     broker-port:
       type: int
       value: 9092
     broker-internal-host-name:
       type: string
-      value: <- get-hostname("kafka/kafka-2", "kafka") split(".dns.podman") join("")
+      value: <- get-hostname("kafka-cluster/kafka-1", "kafka") split(".dns.podman") join("") concat-all
     broker-internal-port:
       type: int
       value: 29092
     zookeeper-connects:
       env: KAFKA_ZOOKEEPER_CONNECT
       type: string
-      # value: <- get-hostname("kafka/zoo1", "zookeeper") split(".dns.podman") join("") ":2181" concat-all
-      value: <- get-hostname("kafka/zoo1", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka/zoo2", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka/zoo3", "zookeeper") split(".dns.podman") join("") ":2181" concat-all
+      value: <- get-hostname("kafka-cluster/zoo1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
     zookeeper-port:
       type: int
       value: 2181
+    kafka-image:
+      value: <- $kafka-image-tag
+      type: string  
 
+
+kafka-1:
+  defines: runnable
+  inherits: ./kafka-common
+  variables:
+    broker-internal-host-name: <- get-hostname("kafka-cluster/kafka-1", "kafka") split(".dns.podman") join("") concat-all
+    broker-id: 1
+    broker-port: 9092
+    broker-internal-port: 29092
+    zookeeper-port: 2181
 
 kafka-2:
   defines: runnable
   inherits: ./kafka-common
   variables:
-    # broker-internal-host-name: <- get-hostname("apache-kafka/kafka-broker-2", "kafka") split(".dns.podman") join("")
+    broker-internal-host-name: <- get-hostname("kafka-cluster/kafka-2", "kafka") split(".dns.podman") join("") concat-all
     broker-id: 2
-    broker-port: 9092
-    broker-internal-port: 29092
+    broker-port: 9093
+    broker-internal-port: 29093
     zookeeper-port: 2181
 
-zoo1:
+kafka-3:
   defines: runnable
-  version: latest
-  metadata:
-    defines: metadata
-    name: Apache Zookeper
-    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
-    tags: configuration, services
-    website: https://zookeeper.apache.org/
-    source: https://github.com/apache/zookeeper
-    publisher: monk.io
-    icon: https://assets.monk.io/icons/zookeper.gif
-  containers:
-    defines: containers
-    zookeeper:
-      image: wurstmeister/zookeeper:latest 
-      ports:
-        - <- `0.0.0.0:${zookeeper-port}:2181`
-      environment:
-        - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
-        - ALLOW_PLAINTEXT_LISTENER=yes
-        - ALLOW_ANONYMOUS_LOGIN=yes
-      # paths: 
-      #   - <- `${volume_local}:${volume_container}`
+  inherits: ./kafka-common
   variables:
-    defines: variables
-    zookeeper-port:
-      type: int
-      value: 2181
-    volume_local:
-      type: string
-      value: <- `${moncc-volume-path}/zookeeper`
-    volume_container:
-      type: string
-      value: "/opt/zookeeper-3.4.13/data"
-
-zoo2:
-  defines: runnable
-  version: latest
-  metadata:
-    defines: metadata
-    name: Apache Zookeper
-    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
-    tags: configuration, services
-    website: https://zookeeper.apache.org/
-    source: https://github.com/apache/zookeeper
-    publisher: monk.io
-    icon: https://assets.monk.io/icons/zookeper.gif
-  containers:
-    defines: containers
-    zookeeper:
-      image: wurstmeister/zookeeper:latest 
-      ports:
-        - <- `0.0.0.0:${zookeeper-port}:2181`
-      environment:
-        - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
-        - ALLOW_PLAINTEXT_LISTENER=yes
-        - ALLOW_ANONYMOUS_LOGIN=yes
-      # paths: 
-      #   - <- `${volume_local}:${volume_container}`
-  variables:
-    defines: variables
-    zookeeper-port:
-      type: int
-      value: 2182
-    volume_local:
-      type: string
-      value: <- `${moncc-volume-path}/zookeeper`
-    volume_container:
-      type: string
-      value: "/opt/zookeeper-3.4.13/data"
-
-zoo3:
-  defines: runnable
-  version: latest
-  metadata:
-    defines: metadata
-    name: Apache Zookeper
-    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
-    tags: configuration, services
-    website: https://zookeeper.apache.org/
-    source: https://github.com/apache/zookeeper
-    publisher: monk.io
-    icon: https://assets.monk.io/icons/zookeper.gif
-  containers:
-    defines: containers
-    zookeeper:
-      image: wurstmeister/zookeeper:latest 
-      ports:
-        - <- `0.0.0.0:${zookeeper-port}:2181`
-      environment:
-        - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
-        - ALLOW_PLAINTEXT_LISTENER=yes
-        - ALLOW_ANONYMOUS_LOGIN=yes
-      # paths: 
-      #   - <- `${volume_local}:${volume_container}`
-  variables:
-    defines: variables
-    zookeeper-port:
-      type: int
-      value: 2183
-    volume_local:
-      type: string
-      value: <- `${moncc-volume-path}/zookeeper`
-    volume_container:
-      type: string
-      value: "/opt/zookeeper-3.4.13/data"      
-
+    broker-internal-host-name: <- get-hostname("kafka-cluster/kafka-3", "kafka") split(".dns.podman") join("") concat-all
+    broker-id: 3
+    broker-port: 9094
+    broker-internal-port: 29094
+    zookeeper-port: 2181      
