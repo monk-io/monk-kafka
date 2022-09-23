@@ -222,7 +222,7 @@ runnable  kafka-cluster/zoo-3          local       latest   configuration, servi
 ## Stop, remove and clean up workloads and templates
 
 ```bash
-➜ monk purge -x kafka-cluster/stack local/kafka-cluster/zoo-1 local/kafka-cluster/zoo-2 local/kafka-cluster/zoo-3 local/kafka-cluster/kafka-1 local/kafka-cluster/kafka-2 local/kafka-cluster/kafka-3
+➜ monk purge -x -a kafka-cluster/stack kafka-cluster/kafka-common  local/kafka-cluster/zoo-1 local/kafka-cluster/zoo-2 local/kafka-cluster/zoo-3 local/kafka-cluster/kafka-1 local/kafka-cluster/kafka-2 local/kafka-cluster/kafka-3
 
 ✔ kafka-cluster/stack purged
 ✔ local/kafka-cluster/zoo-1    purged
