@@ -1,3 +1,2 @@
 REPO monk-kafka
-LOAD kafka-2.yaml stack.yaml
-RESOURCES files/server.properties
+LOAD kafka.yaml stack.yaml

@@ -1,12 +1,14 @@
-
-namespace: kafka
+namespace: kafka-cluster
 
 stack:
   defines: process-group
   runnable-list:
-    - kafka/kafka-1
-    - kafka/kafka-2
-    - kafka/kafka-3
-    - kafka/zoo1
-    - kafka/zoo2
-    - kafka/zoo3
+    - kafka-cluster/zoo1
+    - kafka-cluster/zoo2
+    - kafka-cluster/zoo3  
+    - kafka-cluster/kafka-1
+    - kafka-cluster/kafka-2
+    - kafka-cluster/kafka-3
+  variables:
+    kafka-image-tag: "7.2.1"
+    zookeeper-image-tag: "7.2.1"
