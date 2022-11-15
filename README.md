@@ -17,7 +17,7 @@ monk login --email=<email> --password=<password>
 
 In order to load templates and change configuration simply use below commands: 
 ```bash
-git clone https://github.com/kaganmersin/monk-kafka
+git clone https://github.com/monk-io/monk-kafka
 
 ```
 
