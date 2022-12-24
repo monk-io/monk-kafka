@@ -3,6 +3,50 @@ namespace: kafka-cluster
 zoo-1:
   defines: runnable
   version: latest
+  services:
+    zookeeper-2181:
+      container: zookeeper
+      port: 2181
+      protocol: tcp
+      host-port: 2181
+    zookeeper-2888:
+      container: zookeeper
+      port: 2888
+      protocol: tcp
+      host-port: 2888   
+    zookeeper-3888:
+      container: zookeeper
+      port: 3888
+      protocol: tcp
+      host-port: 3888
+  connections:
+    zookeeper1-2181:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-2181
+    zookeeper1-2888:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-2888
+    zookeeper1-3888:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-3888  
+    zookeeper2-2181:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-2181
+    zookeeper2-2888:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-2888
+    zookeeper2-3888:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-3888
+    zookeeper3-2181:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-2181
+    zookeeper3-2888:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-2888
+    zookeeper3-3888:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-3888                                            
   readiness:
       code: |
           exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
@@ -46,7 +90,7 @@ zoo-1:
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
-      value: <- get-hostname("kafka-cluster/zoo-1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+      value: <- "0.0.0.0" ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888" concat-all 
     zookeeper-image:
       value: <- $zookeeper-image-tag
       type: string        
@@ -54,6 +98,50 @@ zoo-1:
 zoo-2:
   defines: runnable
   version: latest
+  services:
+    zookeeper-2181:
+      container: zookeeper
+      port: 2181
+      protocol: tcp
+      host-port: 2181
+    zookeeper-2888:
+      container: zookeeper
+      port: 2888
+      protocol: tcp
+      host-port: 2888   
+    zookeeper-3888:
+      container: zookeeper
+      port: 3888
+      protocol: tcp
+      host-port: 3888
+  connections:
+    zookeeper1-2181:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-2181
+    zookeeper1-2888:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-2888
+    zookeeper1-3888:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-3888  
+    zookeeper2-2181:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-2181
+    zookeeper2-2888:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-2888
+    zookeeper2-3888:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-3888
+    zookeeper3-2181:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-2181
+    zookeeper3-2888:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-2888
+    zookeeper3-3888:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-3888    
   readiness:
       code: |
           exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
@@ -97,7 +185,7 @@ zoo-2:
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
-      value: <- get-hostname("kafka-cluster/zoo-1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+      value: <- connection-hostname("zookeeper1-2181") ":2888:3888;" "0.0.0.0" ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888" concat-all 
     zookeeper-image:
       value: <- $zookeeper-image-tag
       type: string        
@@ -105,6 +193,50 @@ zoo-2:
 zoo-3:
   defines: runnable
   version: latest
+  services:
+    zookeeper-2181:
+      container: zookeeper
+      port: 2181
+      protocol: tcp
+      host-port: 2181
+    zookeeper-2888:
+      container: zookeeper
+      port: 2888
+      protocol: tcp
+      host-port: 2888   
+    zookeeper-3888:
+      container: zookeeper
+      port: 3888
+      protocol: tcp
+      host-port: 3888
+  connections:
+    zookeeper1-2181:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-2181
+    zookeeper1-2888:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-2888
+    zookeeper1-3888:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-3888  
+    zookeeper2-2181:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-2181
+    zookeeper2-2888:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-2888
+    zookeeper2-3888:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-3888
+    zookeeper3-2181:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-2181
+    zookeeper3-2888:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-2888
+    zookeeper3-3888:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-3888
   readiness:
       code: |
           exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
@@ -148,7 +280,7 @@ zoo-3:
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
-      value: <- get-hostname("kafka-cluster/zoo-1", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-2", "zookeeper") split(".dns.podman") join("")  ":2888:3888;" get-hostname("kafka-cluster/zoo-3", "zookeeper") split(".dns.podman") join("")  ":2888:3888" concat-all 
+      value: <- connection-hostname("zookeeper1-2181") ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888;" "0.0.0.0" ":2888:3888" concat-all 
     zookeeper-image:
       value: <- $zookeeper-image-tag
       type: string      
@@ -167,7 +299,36 @@ kafka-common:
     website: https://kafka.apache.org/
     source: https://github.com/apache/kafka
     publisher: monk.io
-    icon: https://assets.monk.io/icons/kafka.png  
+    icon: https://assets.monk.io/icons/kafka.png
+  services:
+    kafka-broker:
+      container: kafka
+      port:  <- `${broker-port}` to-i
+      protocol: tcp
+      host-port:  <- `${broker-port}` to-i
+    kafka-internal-broker:
+      container: kafka
+      port:  <- `${broker-internal-port}` to-i
+      protocol: tcp
+  connections:
+    zookeeper1-2181:
+      runnable: kafka-cluster/zoo-1
+      service: zookeeper-2181
+    zookeeper2-2181:
+      runnable: kafka-cluster/zoo-2
+      service: zookeeper-2181
+    zookeeper3-2181:
+      runnable: kafka-cluster/zoo-3
+      service: zookeeper-2181
+    kafka-1:
+      runnable: kafka-cluster/kafka-1
+      service: kafka-internal-broker  
+    kafka-2:
+      runnable: kafka-cluster/kafka-2
+      service: kafka-internal-broker       
+    kafka-3:
+      runnable: kafka-cluster/kafka-3
+      service: kafka-internal-broker      
   containers:
     defines: containers
     kafka:
@@ -199,9 +360,9 @@ kafka-common:
   depends:
     wait-for:
       runnables:
-        - ./zoo-1
-        - ./zoo-2
-        - ./zoo-3
+        - kafka-cluster/zoo-1
+        - kafka-cluster/zoo-2
+        - kafka-cluster/zoo-3
       timeout: 30        
   variables:
     defines: variables
@@ -212,15 +373,16 @@ kafka-common:
       type: int
       value: 9092
     broker-internal-host-name:
+      env: KAFKA_SERVICE_HOSTNAME
       type: string
-      value: <- get-hostname("kafka-cluster/kafka-1", "kafka") split(".dns.podman") join("") concat-all
+      value: <- connection-hostname("kafka-1")
     broker-internal-port:
       type: int
       value: 29092
     zookeeper-connects:
       env: KAFKA_ZOOKEEPER_CONNECT
       type: string
-      value: <- get-hostname("kafka-cluster/zoo-1", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka-cluster/zoo-2", "zookeeper") split(".dns.podman") join("") ":2181," get-hostname("kafka-cluster/zoo-3", "zookeeper") split(".dns.podman") join("") ":2181" concat-all
+      value: <- connection-hostname("zookeeper1-2181") ":2181," connection-hostname("zookeeper2-2181")  ":2181," connection-hostname("zookeeper3-2181")  ":2181" concat-all
     zookeeper-port:
       type: int
       value: 2181
@@ -231,9 +393,9 @@ kafka-common:
 
 kafka-1:
   defines: runnable
-  inherits: ./kafka-common
+  inherits: kafka-cluster/kafka-common
   variables:
-    broker-internal-host-name: <- get-hostname("kafka-cluster/kafka-1", "kafka") split(".dns.podman") join("") concat-all
+    broker-internal-host-name: <- connection-hostname("kafka-1")
     broker-id: 1
     broker-port: 9092
     broker-internal-port: 29092
@@ -241,20 +403,20 @@ kafka-1:
 
 kafka-2:
   defines: runnable
-  inherits: ./kafka-common
+  inherits: kafka-cluster/kafka-common
   variables:
-    broker-internal-host-name: <- get-hostname("kafka-cluster/kafka-2", "kafka") split(".dns.podman") join("") concat-all
+    broker-internal-host-name: <- connection-hostname("kafka-2")
     broker-id: 2
     broker-port: 9093
-    broker-internal-port: 29093
+    broker-internal-port: 29092
     zookeeper-port: 2181
 
 kafka-3:
   defines: runnable
-  inherits: ./kafka-common
+  inherits: kafka-cluster/kafka-common
   variables:
-    broker-internal-host-name: <- get-hostname("kafka-cluster/kafka-3", "kafka") split(".dns.podman") join("") concat-all
+    broker-internal-host-name: <- connection-hostname("kafka-3")
     broker-id: 3
     broker-port: 9094
-    broker-internal-port: 29094
+    broker-internal-port: 29092
     zookeeper-port: 2181
