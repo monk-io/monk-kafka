@@ -18,7 +18,6 @@ zoo-1:
     publisher: monk.io
     icon: https://assets.monk.io/icons/zookeper.gif
   containers:
-    defines: containers
     zookeeper:
       image: confluentinc/cp-zookeeper
       image-tag: <- `${zookeeper-image}`
@@ -69,7 +68,6 @@ zoo-2:
     publisher: monk.io
     icon: https://assets.monk.io/icons/zookeper.gif
   containers:
-    defines: containers
     zookeeper:
       image: confluentinc/cp-zookeeper
       image-tag: <- `${zookeeper-image}`
@@ -120,7 +118,6 @@ zoo-3:
     publisher: monk.io
     icon: https://assets.monk.io/icons/zookeper.gif
   containers:
-    defines: containers
     zookeeper:
       image: confluentinc/cp-zookeeper
       image-tag: <- `${zookeeper-image}`
@@ -135,7 +132,6 @@ zoo-3:
       paths: 
         - <- `${volume_local}:${volume_container}`
   variables:
-    defines: variables
     zookeeper-port:
       type: int
       value: 2183
@@ -169,7 +165,6 @@ kafka-common:
     publisher: monk.io
     icon: https://assets.monk.io/icons/kafka.png  
   containers:
-    defines: containers
     kafka:
       image: confluentinc/cp-kafka
       image-tag: <- `${kafka-image}`
@@ -204,7 +199,6 @@ kafka-common:
         - kafka-cluster/zoo-3
       timeout: 30        
   variables:
-    defines: variables
     broker-id:
       type: int
       value: 2
