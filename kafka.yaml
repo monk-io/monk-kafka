@@ -1,6 +1,7 @@
 namespace: kafka-cluster
 
 zoo-1:
+  defines: runnable
   version: latest
   services:
     zookeeper-2181:
@@ -61,6 +62,7 @@ zoo-1:
     publisher: monk.io
     icon: https://assets.monk.io/icons/zookeper.gif
   containers:
+    defines: containers
     zookeeper:
       image: confluentinc/cp-zookeeper
       image-tag: <- `${zookeeper-image}`
@@ -93,6 +95,7 @@ zoo-1:
       type: string        
 
 zoo-2:
+  defines: runnable
   version: latest
   services:
     zookeeper-2181:
@@ -153,6 +156,7 @@ zoo-2:
     publisher: monk.io
     icon: https://assets.monk.io/icons/zookeper.gif
   containers:
+    defines: containers
     zookeeper:
       image: confluentinc/cp-zookeeper
       image-tag: <- `${zookeeper-image}`
@@ -185,6 +189,7 @@ zoo-2:
       type: string        
 
 zoo-3:
+  defines: runnable
   version: latest
   services:
     zookeeper-2181:
@@ -245,6 +250,7 @@ zoo-3:
     publisher: monk.io
     icon: https://assets.monk.io/icons/zookeper.gif
   containers:
+    defines: containers
     zookeeper:
       image: confluentinc/cp-zookeeper
       image-tag: <- `${zookeeper-image}`
@@ -321,6 +327,7 @@ kafka-common:
       runnable: kafka-cluster/kafka-3
       service: kafka-internal-broker      
   containers:
+    defines: containers
     kafka:
       image: confluentinc/cp-kafka
       image-tag: <- `${kafka-image}`
