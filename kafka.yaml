@@ -1,6 +1,6 @@
 namespace: kafka-cluster
 
-zoo-1:
+zookeeper-base:
   defines: runnable
   version: latest
   services:
@@ -21,31 +21,31 @@ zoo-1:
       host-port: 3888
   connections:
     zookeeper1-2181:
-      runnable: kafka-cluster/zoo-1
+      runnable: kafka-cluster/zookeeper-1
       service: zookeeper-2181
     zookeeper1-2888:
-      runnable: kafka-cluster/zoo-1
+      runnable: kafka-cluster/zookeeper-1
       service: zookeeper-2888
     zookeeper1-3888:
-      runnable: kafka-cluster/zoo-1
+      runnable: kafka-cluster/zookeeper-1
       service: zookeeper-3888  
     zookeeper2-2181:
-      runnable: kafka-cluster/zoo-2
+      runnable: kafka-cluster/zookeeper-2
       service: zookeeper-2181
     zookeeper2-2888:
-      runnable: kafka-cluster/zoo-2
+      runnable: kafka-cluster/zookeeper-2
       service: zookeeper-2888
     zookeeper2-3888:
-      runnable: kafka-cluster/zoo-2
+      runnable: kafka-cluster/zookeeper-2
       service: zookeeper-3888
     zookeeper3-2181:
-      runnable: kafka-cluster/zoo-3
+      runnable: kafka-cluster/zookeeper-3
       service: zookeeper-2181
     zookeeper3-2888:
-      runnable: kafka-cluster/zoo-3
+      runnable: kafka-cluster/zookeeper-3
       service: zookeeper-2888
     zookeeper3-3888:
-      runnable: kafka-cluster/zoo-3
+      runnable: kafka-cluster/zookeeper-3
       service: zookeeper-3888                                            
   readiness:
       code: |
@@ -89,203 +89,50 @@ zoo-1:
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
-      value: <- "0.0.0.0" ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888" concat-all 
+      value: <- connection-hostname("zookeeper1-2181") ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888;" connection-hostname("zookeeper3-2181") ":2888:3888" concat-all 
     zookeeper-image:
       value: <- $zookeeper-image-tag
       type: string        
 
-zoo-2:
+
+zookeeper-1:
   defines: runnable
-  version: latest
-  services:
-    zookeeper-2181:
-      container: zookeeper
-      port: 2181
-      protocol: tcp
-      host-port: 2181
-    zookeeper-2888:
-      container: zookeeper
-      port: 2888
-      protocol: tcp
-      host-port: 2888   
-    zookeeper-3888:
-      container: zookeeper
-      port: 3888
-      protocol: tcp
-      host-port: 3888
-  connections:
-    zookeeper1-2181:
-      runnable: kafka-cluster/zoo-1
-      service: zookeeper-2181
-    zookeeper1-2888:
-      runnable: kafka-cluster/zoo-1
-      service: zookeeper-2888
-    zookeeper1-3888:
-      runnable: kafka-cluster/zoo-1
-      service: zookeeper-3888  
-    zookeeper2-2181:
-      runnable: kafka-cluster/zoo-2
-      service: zookeeper-2181
-    zookeeper2-2888:
-      runnable: kafka-cluster/zoo-2
-      service: zookeeper-2888
-    zookeeper2-3888:
-      runnable: kafka-cluster/zoo-2
-      service: zookeeper-3888
-    zookeeper3-2181:
-      runnable: kafka-cluster/zoo-3
-      service: zookeeper-2181
-    zookeeper3-2888:
-      runnable: kafka-cluster/zoo-3
-      service: zookeeper-2888
-    zookeeper3-3888:
-      runnable: kafka-cluster/zoo-3
-      service: zookeeper-3888    
-  readiness:
-      code: |
-          exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
-      period: 10
-      initialDelay: 5    
-  metadata:
-    defines: metadata
-    name: Apache Zookeper
-    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
-    tags: configuration, services
-    website: https://zookeeper.apache.org/
-    source: https://github.com/apache/zookeeper
-    publisher: monk.io
-    icon: https://assets.monk.io/icons/zookeper.gif
+  inherits: kafka-cluster/zookeeper-base
   containers:
-    defines: containers
-    zookeeper:
-      image: confluentinc/cp-zookeeper
-      image-tag: <- `${zookeeper-image}`
-      ports:
-        - <- `0.0.0.0:${zookeeper-port}:2181`
-        - 2888
-        - 3888
       environment:
-        - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
+        - ZOOKEEPER_SERVER_ID=1  
+  variables:
+    volume_local:
+      type: string
+      value: <- `${moncc-volume-path}/zookeeper1`
+
+zookeeper-2:
+  defines: runnable
+  inherits: kafka-cluster/zookeeper-base
+  containers:
+      environment:
         - ZOOKEEPER_SERVER_ID=2
-        - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=*
-      paths: 
-        - <- `${volume_local}:${volume_container}`
   variables:
-    zookeeper-port:
-      type: int
-      value: 2182
     volume_local:
       type: string
-      value: <- `${moncc-volume-path}/zookeeper1`
-    volume_container:
-      type: string
-      value: "/opt/zookeeper-3.4.13/data"
-    zookeeper-servers:
-      env: ZOOKEEPER_SERVERS
-      type: string
-      value: <- connection-hostname("zookeeper1-2181") ":2888:3888;" "0.0.0.0" ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888" concat-all 
-    zookeeper-image:
-      value: <- $zookeeper-image-tag
-      type: string        
+      value: <- `${moncc-volume-path}/zookeeper2`
 
-zoo-3:
+zookeeper-3:
   defines: runnable
-  version: latest
-  services:
-    zookeeper-2181:
-      container: zookeeper
-      port: 2181
-      protocol: tcp
-      host-port: 2181
-    zookeeper-2888:
-      container: zookeeper
-      port: 2888
-      protocol: tcp
-      host-port: 2888   
-    zookeeper-3888:
-      container: zookeeper
-      port: 3888
-      protocol: tcp
-      host-port: 3888
-  connections:
-    zookeeper1-2181:
-      runnable: kafka-cluster/zoo-1
-      service: zookeeper-2181
-    zookeeper1-2888:
-      runnable: kafka-cluster/zoo-1
-      service: zookeeper-2888
-    zookeeper1-3888:
-      runnable: kafka-cluster/zoo-1
-      service: zookeeper-3888  
-    zookeeper2-2181:
-      runnable: kafka-cluster/zoo-2
-      service: zookeeper-2181
-    zookeeper2-2888:
-      runnable: kafka-cluster/zoo-2
-      service: zookeeper-2888
-    zookeeper2-3888:
-      runnable: kafka-cluster/zoo-2
-      service: zookeeper-3888
-    zookeeper3-2181:
-      runnable: kafka-cluster/zoo-3
-      service: zookeeper-2181
-    zookeeper3-2888:
-      runnable: kafka-cluster/zoo-3
-      service: zookeeper-2888
-    zookeeper3-3888:
-      runnable: kafka-cluster/zoo-3
-      service: zookeeper-3888
-  readiness:
-      code: |
-          exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
-      period: 10
-      initialDelay: 5
-  metadata:
-    defines: metadata
-    name: Apache Zookeper
-    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
-    tags: configuration, services
-    website: https://zookeeper.apache.org/
-    source: https://github.com/apache/zookeeper
-    publisher: monk.io
-    icon: https://assets.monk.io/icons/zookeper.gif
+  inherits: kafka-cluster/zookeeper-base
   containers:
-    defines: containers
-    zookeeper:
-      image: confluentinc/cp-zookeeper
-      image-tag: <- `${zookeeper-image}`
-      ports:
-        - <- `0.0.0.0:${zookeeper-port}:2181`
-        - 2888
-        - 3888
       environment:
-        - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
-        - ZOOKEEPER_SERVER_ID=3
-        - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=*
-      paths: 
-        - <- `${volume_local}:${volume_container}`
+        - ZOOKEEPER_SERVER_ID=3  
   variables:
-    zookeeper-port:
-      type: int
-      value: 2183
     volume_local:
       type: string
-      value: <- `${moncc-volume-path}/zookeeper1`
-    volume_container:
-      type: string
-      value: "/opt/zookeeper-3.4.13/data"
-    zookeeper-servers:
-      env: ZOOKEEPER_SERVERS
-      type: string
-      value: <- connection-hostname("zookeeper1-2181") ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888;" "0.0.0.0" ":2888:3888" concat-all 
-    zookeeper-image:
-      value: <- $zookeeper-image-tag
-      type: string      
+      value: <- `${moncc-volume-path}/zookeeper3`            
 
 
 
 
-kafka-common:
+
+kafka-base:
   defines: runnable
   version: latest
   metadata:
@@ -309,13 +156,13 @@ kafka-common:
       protocol: tcp
   connections:
     zookeeper1-2181:
-      runnable: kafka-cluster/zoo-1
+      runnable: kafka-cluster/zookeeper-1
       service: zookeeper-2181
     zookeeper2-2181:
-      runnable: kafka-cluster/zoo-2
+      runnable: kafka-cluster/zookeeper-2
       service: zookeeper-2181
     zookeeper3-2181:
-      runnable: kafka-cluster/zoo-3
+      runnable: kafka-cluster/zookeeper-3
       service: zookeeper-2181
     kafka-1:
       runnable: kafka-cluster/kafka-1
@@ -357,9 +204,9 @@ kafka-common:
   depends:
     wait-for:
       runnables:
-        - kafka-cluster/zoo-1
-        - kafka-cluster/zoo-2
-        - kafka-cluster/zoo-3
+        - kafka-cluster/zookeeper-1
+        - kafka-cluster/zookeeper-2
+        - kafka-cluster/zookeeper-3
       timeout: 30        
   variables:
     broker-id:
@@ -389,7 +236,7 @@ kafka-common:
 
 kafka-1:
   defines: runnable
-  inherits: kafka-cluster/kafka-common
+  inherits: kafka-cluster/kafka-base
   variables:
     broker-internal-host-name: <- connection-hostname("kafka-1")
     broker-id: 1
@@ -399,7 +246,7 @@ kafka-1:
 
 kafka-2:
   defines: runnable
-  inherits: kafka-cluster/kafka-common
+  inherits: kafka-cluster/kafka-base
   variables:
     broker-internal-host-name: <- connection-hostname("kafka-2")
     broker-id: 2
@@ -409,7 +256,7 @@ kafka-2:
 
 kafka-3:
   defines: runnable
-  inherits: kafka-cluster/kafka-common
+  inherits: kafka-cluster/kafka-base
   variables:
     broker-internal-host-name: <- connection-hostname("kafka-3")
     broker-id: 3
