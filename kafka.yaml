@@ -98,10 +98,6 @@ zookeeper-1:
       env: ZOOKEEPER_SERVERS
       type: string
       value: <- "0.0.0.0" ":2888:3888;" get-hostname("kafka-cluster/zookeeper-2", "zookeeper") ":2888:3888;" get-hostname("kafka-cluster/zookeeper-3", "zookeeper") ":2888:3888" concat-all
-    # zookeeper-servers:
-    #   env: ZOOKEEPER_SERVERS
-    #   type: string
-    #   value: server.1=13.51.204.15:2888:3888;2181 server.2=13.53.42.43:2888:3888;2181 server.3=13.48.149.182:2888:3888;2181
     zookeeper-id:
       env: ZOOKEEPER_SERVER_ID
       type: string
@@ -114,10 +110,6 @@ zookeeper-2:
     volume_local:
       type: string
       value: <- `${moncc-volume-path}/zookeeper2`
-    # zookeeper-servers:
-    #   env: ZOOKEEPER_SERVERS
-    #   type: string
-    #   value: <- connection-hostname("zookeeper1-2181") ":2888:3888;" "0.0.0.0" ":2888:3888;" connection-hostname("zookeeper3-2181") ":2888:3888" concat-all
     zookeeper-servers: 
       env: ZOOKEEPER_SERVERS
       type: string
@@ -134,10 +126,6 @@ zookeeper-3:
     volume_local:
       type: string
       value: <- `${moncc-volume-path}/zookeeper3`
-    # zookeeper-servers:
-    #   env: ZOOKEEPER_SERVERS
-    #   type: string
-    #   value: <- connection-hostname("zookeeper1-2181") ":2888:3888;" connection-hostname("zookeeper2-2181") ":2888:3888;" "0.0.0.0" ":2888:3888" concat-all
     zookeeper-servers: 
       env: ZOOKEEPER_SERVERS
       type: string
