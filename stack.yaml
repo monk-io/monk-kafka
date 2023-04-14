@@ -1,3 +1,4 @@
+---
 namespace: kafka-cluster
 
 stack:
@@ -10,5 +11,5 @@ stack:
     - kafka-cluster/kafka-2
     - kafka-cluster/kafka-3
   variables:
-    kafka-image-tag: "7.2.1"
-    zookeeper-image-tag: "7.2.1"
+    kafka-image-tag: 7.2.1
+    zookeeper-image-tag: 7.2.1
