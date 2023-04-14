@@ -4,17 +4,17 @@ zookeeper-base:
   defines: runnable
   version: latest
   services:
-    zookeeper-2181:
+    zookeeper-clientPort:
       container: zookeeper
       port: 2181
       protocol: tcp
       host-port: 2181
-    zookeeper-2888:
+    zookeeper-peerPort:
       container: zookeeper
       port: 2888
       protocol: tcp
       host-port: 2888   
-    zookeeper-3888:
+    zookeeper-leaderPort:
       container: zookeeper
       port: 3888
       protocol: tcp
@@ -22,31 +22,13 @@ zookeeper-base:
   connections:
     zookeeper1-2181:
       runnable: kafka-cluster/zookeeper-1
-      service: zookeeper-2181
-    zookeeper1-2888:
-      runnable: kafka-cluster/zookeeper-1
-      service: zookeeper-2888
-    zookeeper1-3888:
-      runnable: kafka-cluster/zookeeper-1
-      service: zookeeper-3888  
+      service: zookeeper-clientPort
     zookeeper2-2181:
       runnable: kafka-cluster/zookeeper-2
-      service: zookeeper-2181
-    zookeeper2-2888:
-      runnable: kafka-cluster/zookeeper-2
-      service: zookeeper-2888
-    zookeeper2-3888:
-      runnable: kafka-cluster/zookeeper-2
-      service: zookeeper-3888
+      service: zookeeper-clientPort
     zookeeper3-2181:
       runnable: kafka-cluster/zookeeper-3
-      service: zookeeper-2181
-    zookeeper3-2888:
-      runnable: kafka-cluster/zookeeper-3
-      service: zookeeper-2888
-    zookeeper3-3888:
-      runnable: kafka-cluster/zookeeper-3
-      service: zookeeper-3888                                            
+      service: zookeeper-clientPort                                       
   readiness:
       code: |
           exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
@@ -90,6 +72,8 @@ zookeeper-base:
 zookeeper-1:
   defines: runnable
   inherits: kafka-cluster/zookeeper-base
+  metadata:
+    private: true
   variables:
     volume_local:
       type: string
@@ -106,6 +90,8 @@ zookeeper-1:
 zookeeper-2:
   defines: runnable
   inherits: kafka-cluster/zookeeper-base
+  metadata:
+    private: true  
   variables:
     volume_local:
       type: string
@@ -122,6 +108,8 @@ zookeeper-2:
 zookeeper-3:
   defines: runnable
   inherits: kafka-cluster/zookeeper-base
+  metadata:
+    private: true  
   variables:
     volume_local:
       type: string
@@ -162,15 +150,15 @@ kafka-base:
       port:  <- `${broker-internal-port}` to-i
       protocol: tcp
   connections:
-    zookeeper1-2181:
+    zookeeper1-clientPort:
       runnable: kafka-cluster/zookeeper-1
-      service: zookeeper-2181
-    zookeeper2-2181:
+      service: zookeeper-clientPort
+    zookeeper2-clientPort:
       runnable: kafka-cluster/zookeeper-2
-      service: zookeeper-2181
-    zookeeper3-2181:
+      service: zookeeper-clientPort
+    zookeeper3-clientPort:
       runnable: kafka-cluster/zookeeper-3
-      service: zookeeper-2181
+      service: zookeeper-clientPort
     kafka-1:
       runnable: kafka-cluster/kafka-1
       service: kafka-internal-broker  
@@ -232,7 +220,7 @@ kafka-base:
     zookeeper-connects:
       env: KAFKA_ZOOKEEPER_CONNECT
       type: string
-      value: <- connection-hostname("zookeeper1-2181") ":2181," connection-hostname("zookeeper2-2181")  ":2181," connection-hostname("zookeeper3-2181")  ":2181" concat-all
+      value: <- connection-hostname("zookeeper1-clientPort") ":2181," connection-hostname("zookeeper2-clientPort")  ":2181," connection-hostname("zookeeper3-clientPort") ":2181" concat-all
     zookeeper-port:
       type: int
       value: 2181
@@ -244,6 +232,8 @@ kafka-base:
 kafka-1:
   defines: runnable
   inherits: kafka-cluster/kafka-base
+  metadata:
+    private: true  
   variables:
     broker-internal-host-name: <- connection-hostname("kafka-1")
     broker-id: 1
@@ -254,6 +244,8 @@ kafka-1:
 kafka-2:
   defines: runnable
   inherits: kafka-cluster/kafka-base
+  metadata:
+    private: true  
   variables:
     broker-internal-host-name: <- connection-hostname("kafka-2")
     broker-id: 2
@@ -264,6 +256,8 @@ kafka-2:
 kafka-3:
   defines: runnable
   inherits: kafka-cluster/kafka-base
+  metadata:
+    private: true  
   variables:
     broker-internal-host-name: <- connection-hostname("kafka-3")
     broker-id: 3
