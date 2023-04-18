@@ -2,10 +2,9 @@
 
 This repository contains Monk.io template to deploy apache-kafka system either locally or on cloud of your choice (AWS, GCP, Azure, Digital Ocean).
 
-
 ## Start
 
-Set up Monk - https://docs.monk.io/docs/monk-in-10/
+[Set up Monk ](https://docs.monk.io/docs/monk-in-10/)
 
 Start `monkd` and login.
 
@@ -15,7 +14,8 @@ monk login --email=<email> --password=<password>
 
 ## Clone Monk kafka repository
 
-In order to load templates and change configuration simply use below commands: 
+In order to load templates and change configuration simply use below commands:
+
 ```bash
 git clone https://github.com/monk-io/monk-kafka
 
@@ -33,39 +33,37 @@ The current variables can be found in `stack.yaml/variables` section
     zookeeper-image-tag: "7.2.1"
 ```
 
-##  Template variables
+## Template variables
 
-| Variable | Description | Type | Example |
-|----------|-------------|------|---------|
-| **zookeeper-image-tag** | Zookeeper image version. | string | 7.2.1 |
-| **kafka-image-tag** | Kafka image version. | string | 7.2.1 |
-
-
+| Variable                | Description              | Type   | Example |
+| ----------------------- | ------------------------ | ------ | ------- |
+| **zookeeper-image-tag** | Zookeeper image version. | string | 7.2.1   |
+| **kafka-image-tag**     | Kafka image version.     | string | 7.2.1   |
 
 ## Local Deployment
 
-First clone the repository  and simply run below command after launching `monkd`:
-:
+| First clone the repository  and simply run below command after launching `monkd`: |
+| :-------------------------------------------------------------------------------: |
 
 ```bash
 ➜  monk load MANIFEST
 
 ✨ Loaded:
  ├─🔩 Runnables:
- │  ├─🧩 kafka-cluster/kafka-common
- │  ├─🧩 kafka-cluster/zoo-3
- │  ├─🧩 kafka-cluster/zoo-2
+ │  ├─🧩 kafka-cluster/kafka-base
+ │  ├─🧩 kafka-cluster/zookeeper-3
+ │  ├─🧩 kafka-cluster/zookeeper-3
  │  ├─🧩 kafka-cluster/kafka-3
- │  ├─🧩 kafka-cluster/zoo-1
+ │  ├─🧩 kafka-cluster/zookeeper-1
  │  ├─🧩 kafka-cluster/kafka-1
  │  └─🧩 kafka-cluster/kafka-2
  ├─🔗 Process groups:
  │  └─🧩 kafka-cluster/stack
  └─⚙️ Entity instances:
-    ├─🧩 kafka-cluster/kafka-common/metadata
-    ├─🧩 kafka-cluster/zoo-1/metadata
-    ├─🧩 kafka-cluster/zoo-2/metadata
-    └─🧩 kafka-cluster/zoo-3/metadata
+    ├─🧩 kafka-cluster/kafka-base/metadata
+    ├─🧩 kafka-cluster/zookeeper-1/metadata
+    ├─🧩 kafka-cluster/zookeeper-3/metadata
+    └─🧩 kafka-cluster/zookeeper-3/metadata
 ✔ All templates loaded successfully
 
 ➜  monk list kafka-cluster
@@ -75,11 +73,11 @@ Type      Template                    Repository  Version  Tags
 runnable  kafka-cluster/kafka-1       local       -        streaming, data, analytics, integration, distributed
 runnable  kafka-cluster/kafka-2       local       -        streaming, data, analytics, integration, distributed
 runnable  kafka-cluster/kafka-3       local       -        streaming, data, analytics, integration, distributed
-runnable  kafka-cluster/kafka-common  local       -        streaming, data, analytics, integration, distributed
+runnable  kafka-cluster/kafka-base  local       -        streaming, data, analytics, integration, distributed
 group     kafka-cluster/stack         local       -        -
-runnable  kafka-cluster/zoo-1          local       latest   configuration, services
-runnable  kafka-cluster/zoo-2          local       latest   configuration, services
-runnable  kafka-cluster/zoo-3          local       latest   configuration, services
+runnable  kafka-cluster/zookeeper-1          local       latest   configuration, services
+runnable  kafka-cluster/zookeeper-3          local       latest   configuration, services
+runnable  kafka-cluster/zookeeper-3          local       latest   configuration, services
 
 
 ➜  monk run kafka-cluster/stack
@@ -88,8 +86,7 @@ runnable  kafka-cluster/zoo-3          local       latest   configuration, servi
 
 ```
 
-This will start the entire kafka-cluster/stack with a Nginx reverse proxy. 
-
+This will start the entire kafka-cluster/stack with a Nginx reverse proxy.
 
 ## Cloud Deployment
 
@@ -132,25 +129,26 @@ Your cluster has been created successfully.
 ```
 
 Once cluster is ready execute the same command as for local and select your cluster (the option will appear automatically).
+
 ```bash
 ➜  monk load MANIFEST
 
 ✨ Loaded:
  ├─🔩 Runnables:
- │  ├─🧩 kafka-cluster/kafka-common
- │  ├─🧩 kafka-cluster/zoo-3
- │  ├─🧩 kafka-cluster/zoo-2
+ │  ├─🧩 kafka-cluster/kafka-base
+ │  ├─🧩 kafka-cluster/zookeeper-3
+ │  ├─🧩 kafka-cluster/zookeeper-3
  │  ├─🧩 kafka-cluster/kafka-3
- │  ├─🧩 kafka-cluster/zoo-1
+ │  ├─🧩 kafka-cluster/zookeeper-1
  │  ├─🧩 kafka-cluster/kafka-1
  │  └─🧩 kafka-cluster/kafka-2
  ├─🔗 Process groups:
  │  └─🧩 kafka-cluster/stack
  └─⚙️ Entity instances:
-    ├─🧩 kafka-cluster/kafka-common/metadata
-    ├─🧩 kafka-cluster/zoo-1/metadata
-    ├─🧩 kafka-cluster/zoo-2/metadata
-    └─🧩 kafka-cluster/zoo-3/metadata
+    ├─🧩 kafka-cluster/kafka-base/metadata
+    ├─🧩 kafka-cluster/zookeeper-1/metadata
+    ├─🧩 kafka-cluster/zookeeper-3/metadata
+    └─🧩 kafka-cluster/zookeeper-3/metadata
 ✔ All templates loaded successfully
 
 ➜  monk list kafka-cluster
@@ -160,11 +158,11 @@ Type      Template                    Repository  Version  Tags
 runnable  kafka-cluster/kafka-1       local       -        streaming, data, analytics, integration, distributed
 runnable  kafka-cluster/kafka-2       local       -        streaming, data, analytics, integration, distributed
 runnable  kafka-cluster/kafka-3       local       -        streaming, data, analytics, integration, distributed
-runnable  kafka-cluster/kafka-common  local       -        streaming, data, analytics, integration, distributed
+runnable  kafka-cluster/kafka-base  local       -        streaming, data, analytics, integration, distributed
 group     kafka-cluster/stack         local       -        -
-runnable  kafka-cluster/zoo-1          local       latest   configuration, services
-runnable  kafka-cluster/zoo-2          local       latest   configuration, services
-runnable  kafka-cluster/zoo-3          local       latest   configuration, services
+runnable  kafka-cluster/zookeeper-1          local       latest   configuration, services
+runnable  kafka-cluster/zookeeper-3          local       latest   configuration, services
+runnable  kafka-cluster/zookeeper-3          local       latest   configuration, services
 ➜  monk run kafka/stack
 
 ✔ Started local/kafka-cluster/stack
@@ -175,13 +173,13 @@ runnable  kafka-cluster/zoo-3          local       latest   configuration, servi
 
 ```bash
 # show Zookeeker-1 logs
-➜  monk logs -l 1000 -f local/kafka-cluster/zoo-1
+➜  monk logs -l 1000 -f local/kafka-cluster/zookeeper-1
 
 # show Zookeeker-2 logs
-➜  monk logs -l 1000 -f local/kafka-cluster/zoo-2
+➜  monk logs -l 1000 -f local/kafka-cluster/zookeeper-3
 
 # show Zookeeker-3 logs
-➜  monk logs -l 1000 -f local/kafka-cluster/zoo-3
+➜  monk logs -l 1000 -f local/kafka-cluster/zookeeper-3
 
 # show Kafka-1 logs
 ➜  monk logs -l 1000 -f local/kafka-cluster/kafka-1
@@ -196,13 +194,13 @@ runnable  kafka-cluster/zoo-3          local       latest   configuration, servi
 
 
 # access shell in the container running Zookeeker-1
-➜  monk shell local/kafka-cluster/zoo-1
+➜  monk shell local/kafka-cluster/zookeeper-1
 
 # access shell in the container running Zookeeker-2
-➜  monk shell local/kafka-cluster/zoo-1
+➜  monk shell local/kafka-cluster/zookeeper-1
 
 # access shell in the container running Zookeeker-3
-➜  monk shell local/kafka-cluster/zoo-1
+➜  monk shell local/kafka-cluster/zookeeper-1
 
 # access shell in the container running Kafka-1
 ➜  monk shell local/kafka-cluster/kafka-1
@@ -222,12 +220,12 @@ runnable  kafka-cluster/zoo-3          local       latest   configuration, servi
 ## Stop, remove and clean up workloads and templates
 
 ```bash
-➜ monk purge -x -a kafka-cluster/stack kafka-cluster/kafka-common  local/kafka-cluster/zoo-1 local/kafka-cluster/zoo-2 local/kafka-cluster/zoo-3 local/kafka-cluster/kafka-1 local/kafka-cluster/kafka-2 local/kafka-cluster/kafka-3
+➜ monk purge -x -a kafka-cluster/stack kafka-cluster/kafka-base  local/kafka-cluster/zookeeper-1 local/kafka-cluster/zookeeper-3 local/kafka-cluster/zookeeper-3 local/kafka-cluster/kafka-1 local/kafka-cluster/kafka-2 local/kafka-cluster/kafka-3
 
 ✔ kafka-cluster/stack purged
-✔ local/kafka-cluster/zoo-1    purged
-✔ local/kafka-cluster/zoo-2    purged
-✔ local/kafka-cluster/zoo-3    purged
+✔ local/kafka-cluster/zookeeper-1    purged
+✔ local/kafka-cluster/zookeeper-3    purged
+✔ local/kafka-cluster/zookeeper-3    purged
 ✔ local/kafka-cluster/kafka-1  purged
 ✔ local/kafka-cluster/kafka-2  purged
 ✔ local/kafka-cluster/kafka-3  purged
