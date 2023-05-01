@@ -8,17 +8,14 @@ zookeeper-base:
       container: zookeeper
       port: <- `${zookeeper-port}`
       protocol: tcp
-      host-port: 2181
     zookeeper-peerPort:
       container: zookeeper
       port: 2888
       protocol: tcp
-      host-port: 2888
     zookeeper-leaderPort:
       container: zookeeper
       port: 3888
       protocol: tcp
-      host-port: 3888
   connections:
     zookeeper1-clientPort:
       runnable: kafka-cluster/zookeeper-1
@@ -48,10 +45,6 @@ zookeeper-base:
     zookeeper:
       image: confluentinc/cp-zookeeper
       image-tag: <- `${zookeeper-image}`
-      ports:
-        - <- `0.0.0.0:${zookeeper-port}:2181`
-        - 2888
-        - 3888
       environment:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
         - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.electionPortBindRetry=0
@@ -142,7 +135,6 @@ kafka-base:
       container: kafka
       port: <- `${broker-port}`
       protocol: tcp
-      host-port: <- `${broker-port}`
     kafka-internal-broker:
       container: kafka
       port: <- `${broker-internal-port}`
@@ -171,9 +163,6 @@ kafka-base:
     kafka:
       image: confluentinc/cp-kafka
       image-tag: <- `${kafka-image}`
-      ports:
-        - <- `0.0.0.0:${broker-port}:${broker-port}`
-        - <- `0.0.0.0:${broker-internal-port}:${broker-internal-port}`
       environment:
         - <- `KAFKA_ADVERTISED_LISTENERS=INTERNAL://${broker-internal-host-name}:${broker-internal-port},PLAINTEXT_HOST://localhost:${broker-port}`
         - <- `KAFKA_ZOOKEEPER_CONNECT=${zookeeper-connects}`
