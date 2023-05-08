@@ -3,10 +3,17 @@ namespace: kafka-cluster
 
 stack:
   defines: process-group
+  metadata:
+    name: Apache Kafka
+    description: Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
+    tags: streaming,data,analytics,integration,distributed
+    website: https://kafka.apache.org/
+    source: https://github.com/apache/kafka
+    publisher: monk.io
+    icon: https://assets.monk.io/icons/kafka.png
+    private: false
   runnable-list:
     - kafka-cluster/zookeeper-1
-    - kafka-cluster/zookeeper-2
-    - kafka-cluster/zookeeper-3
     - kafka-cluster/kafka-1
     - kafka-cluster/kafka-2
     - kafka-cluster/kafka-3
