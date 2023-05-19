@@ -1,5 +1,5 @@
+---
 namespace: kafka-cluster
-
 zookeeper-common:
   defines: runnable
   version: latest
@@ -28,12 +28,14 @@ zookeeper-common:
   metadata:
     defines: metadata
     name: Apache Zookeper
-    description: Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination.
+    description: Apache ZooKeeper is an effort to develop and maintain an open-source
+      server which enables highly reliable distributed coordination.
     tags: configuration, services
     website: https://zookeeper.apache.org/
     source: https://github.com/apache/zookeeper
     publisher: monk.io
     icon: https://assets.monk.io/icons/zookeper.gif
+    private: true
   containers:
     defines: containers
     zookeeper:
@@ -42,8 +44,7 @@ zookeeper-common:
       environment:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
         - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.electionPortBindRetry=0
-      paths:
-        - <- `${moncc-volume-path}/zookeeper1:/opt/zookeeper-3.4.13/data`
+      paths: ['<- `${moncc-volume-path}/zookeeper1:/opt/zookeeper-3.4.13/data`']
   variables:
     zookeeper-port:
       type: int
@@ -64,24 +65,27 @@ zookeeper-1:
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
-      value: "0.0.0.0:2888:3888"
+      value: 0.0.0.0:2888:3888
     zookeeper-id:
       env: ZOOKEEPER_SERVER_ID
       type: string
       value: 1
-    zookeeper-port: 2181 
+    zookeeper-port: 2181
 
 kafka-common:
   defines: runnable
   version: latest
   metadata:
     name: Apache Kafka
-    description: Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
+    description: Apache Kafka is an open-source distributed event streaming platform
+      used by thousands of companies for high-performance data pipelines, streaming
+      analytics, data integration, and mission-critical applications.
     tags: streaming,data,analytics,integration,distributed
     website: https://kafka.apache.org/
     source: https://github.com/apache/kafka
     publisher: monk.io
     icon: https://assets.monk.io/icons/kafka.png
+    private: true
   services:
     kafka-broker:
       container: kafka
@@ -103,7 +107,7 @@ kafka-common:
       service: kafka-broker
     kafka-3:
       runnable: kafka-cluster/kafka-3
-      service: kafka-broker    
+      service: kafka-broker
   containers:
     defines: containers
     kafka:
@@ -131,8 +135,7 @@ kafka-common:
         - CONFLUENT_SUPPORT_CUSTOMER_ID=anonymous
   depends:
     wait-for:
-      runnables:
-        - kafka-cluster/zookeeper-1
+      runnables: [kafka-cluster/zookeeper-1]
       timeout: 30
   variables:
     broker-id:
@@ -158,7 +161,6 @@ kafka-common:
     kafka-image:
       value: <- $kafka-image-tag default("7.2.1")
       type: string
-
 kafka-1:
   defines: runnable
   inherits: kafka-cluster/kafka-common
@@ -169,7 +171,6 @@ kafka-1:
     broker-id: 1
     broker-port: 9092
     broker-internal-port: 29092
-
 kafka-2:
   defines: runnable
   inherits: kafka-cluster/kafka-common
@@ -180,7 +181,6 @@ kafka-2:
     broker-id: 2
     broker-port: 9093
     broker-internal-port: 29093
-
 kafka-3:
   defines: runnable
   inherits: kafka-cluster/kafka-common
