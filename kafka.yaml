@@ -1,12 +1,13 @@
 ---
 namespace: kafka-cluster
+
 zookeeper-common:
   defines: runnable
   version: latest
   services:
     zookeeper-clientPort:
       container: zookeeper
-      port: <- `${zookeeper-port}`
+      port: <- $zookeeper-port
       protocol: tcp
     zookeeper-peerPort:
       container: zookeeper
@@ -26,11 +27,12 @@ zookeeper-common:
     period: 10
     initialDelay: 5
   metadata:
-    defines: metadata
     name: Apache Zookeper
-    description: Apache ZooKeeper is an effort to develop and maintain an open-source
-      server which enables highly reliable distributed coordination.
-    tags: configuration, services
+    description: |
+      ZooKeeper is a distributed coordination service that is widely used in distributed systems for maintaining configuration information, providing distributed synchronization, and offering group services. 
+      It was initially developed by Yahoo and later became an Apache Software Foundation project.ZooKeeper provides a simple and reliable way for distributed processes or nodes to coordinate with each other through a shared hierarchical namespace, called a znode tree. 
+      Each znode can store data and have associated properties
+    tags: configuration, services, self hosted, distributed coordination, microservices, distributed synchronization
     website: https://zookeeper.apache.org/
     source: https://github.com/apache/zookeeper
     publisher: monk.io
@@ -44,7 +46,8 @@ zookeeper-common:
       environment:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
         - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.electionPortBindRetry=0
-      paths: ['<- `${moncc-volume-path}/zookeeper1:/opt/zookeeper-3.4.13/data`']
+      paths:
+        - <- `${monk-volume-path}/zookeeper1:/opt/zookeeper-3.4.13/data`
   variables:
     zookeeper-port:
       type: int
@@ -61,7 +64,7 @@ zookeeper-1:
   variables:
     volume_local:
       type: string
-      value: <- `${moncc-volume-path}/zookeeper1`
+      value: <- `${monk-volume-path}/zookeeper1`
     zookeeper-servers:
       env: ZOOKEEPER_SERVERS
       type: string
@@ -70,17 +73,17 @@ zookeeper-1:
       env: ZOOKEEPER_SERVER_ID
       type: string
       value: 1
-    zookeeper-port: 2181
 
 kafka-common:
   defines: runnable
   version: latest
   metadata:
     name: Apache Kafka
-    description: Apache Kafka is an open-source distributed event streaming platform
-      used by thousands of companies for high-performance data pipelines, streaming
-      analytics, data integration, and mission-critical applications.
-    tags: streaming,data,analytics,integration,distributed
+    description: |
+      Apache Kafka is an open-source distributed streaming platform designed to handle high-throughput, fault-tolerant, and real-time data processing. 
+      It was developed at LinkedIn and later became an Apache Software Foundation project. Kafka is built around a publish-subscribe messaging model and is designed to handle massive amounts of data in real-time. 
+      It provides a distributed, fault-tolerant, and scalable architecture that allows data to be ingested, stored, and processed by multiple applications or systems simultaneously.
+    tags: streaming,data, analytics, integration, distributed, partitions, message broker, message queue,
     website: https://kafka.apache.org/
     source: https://github.com/apache/kafka
     publisher: monk.io
@@ -135,7 +138,8 @@ kafka-common:
         - CONFLUENT_SUPPORT_CUSTOMER_ID=anonymous
   depends:
     wait-for:
-      runnables: [kafka-cluster/zookeeper-1]
+      runnables:
+        - kafka-cluster/zookeeper-1
       timeout: 30
   variables:
     broker-id:
@@ -161,6 +165,7 @@ kafka-common:
     kafka-image:
       value: <- $kafka-image-tag default("7.2.1")
       type: string
+
 kafka-1:
   defines: runnable
   inherits: kafka-cluster/kafka-common
@@ -171,6 +176,7 @@ kafka-1:
     broker-id: 1
     broker-port: 9092
     broker-internal-port: 29092
+
 kafka-2:
   defines: runnable
   inherits: kafka-cluster/kafka-common
@@ -181,6 +187,7 @@ kafka-2:
     broker-id: 2
     broker-port: 9093
     broker-internal-port: 29093
+
 kafka-3:
   defines: runnable
   inherits: kafka-cluster/kafka-common
