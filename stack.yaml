@@ -9,7 +9,7 @@ stack:
       Apache Kafka is an open-source distributed streaming platform designed to handle high-throughput, fault-tolerant, and real-time data processing. 
       It was developed at LinkedIn and later became an Apache Software Foundation project. Kafka is built around a publish-subscribe messaging model and is designed to handle massive amounts of data in real-time. 
       It provides a distributed, fault-tolerant, and scalable architecture that allows data to be ingested, stored, and processed by multiple applications or systems simultaneously.
-    tags: streaming,data, analytics, integration, distributed, partitions, message broker, message queue,
+    tags: distributed, partitions, message broker, data, integration, streaming, message queue, analytics
     website: https://kafka.apache.org/
     source: https://github.com/apache/kafka
     publisher: monk.io

@@ -32,7 +32,7 @@ zookeeper-common:
       ZooKeeper is a distributed coordination service that is widely used in distributed systems for maintaining configuration information, providing distributed synchronization, and offering group services. 
       It was initially developed by Yahoo and later became an Apache Software Foundation project.ZooKeeper provides a simple and reliable way for distributed processes or nodes to coordinate with each other through a shared hierarchical namespace, called a znode tree. 
       Each znode can store data and have associated properties
-    tags: configuration, services, self hosted, distributed coordination, microservices, distributed synchronization
+    tags: configuration, distributed coordination, microservices, self hosted, distributed synchronization
     website: https://zookeeper.apache.org/
     source: https://github.com/apache/zookeeper
     publisher: monk.io
@@ -83,7 +83,7 @@ kafka-common:
       Apache Kafka is an open-source distributed streaming platform designed to handle high-throughput, fault-tolerant, and real-time data processing. 
       It was developed at LinkedIn and later became an Apache Software Foundation project. Kafka is built around a publish-subscribe messaging model and is designed to handle massive amounts of data in real-time. 
       It provides a distributed, fault-tolerant, and scalable architecture that allows data to be ingested, stored, and processed by multiple applications or systems simultaneously.
-    tags: streaming,data, analytics, integration, distributed, partitions, message broker, message queue,
+    tags: distributed, partitions, message broker, data, integration, streaming, message queue, analytics
     website: https://kafka.apache.org/
     source: https://github.com/apache/kafka
     publisher: monk.io
