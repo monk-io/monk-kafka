@@ -42,7 +42,7 @@ zookeeper-common:
     defines: containers
     zookeeper:
       image: confluentinc/cp-zookeeper
-      image-tag: <- `${zookeeper-image}`
+      image-tag: <- $zookeeper-image
       environment:
         - <- `ZOOKEEPER_CLIENT_PORT=${zookeeper-port}`
         - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=* -Dzookeeper.electionPortBindRetry=0
@@ -92,11 +92,11 @@ kafka-common:
   services:
     kafka-broker:
       container: kafka
-      port: <- `${broker-port}`
+      port: <- $broker-port
       protocol: tcp
     kafka-internal-broker:
       container: kafka
-      port: <- `${broker-internal-port}`
+      port: <- $broker-internal-port
       protocol: tcp
   connections:
     zookeeper1-clientPort:
@@ -115,7 +115,7 @@ kafka-common:
     defines: containers
     kafka:
       image: confluentinc/cp-kafka
-      image-tag: <- `${kafka-image}`
+      image-tag: <- $kafka-image
       environment:
         - <- `KAFKA_ADVERTISED_LISTENERS=INTERNAL://${broker-internal-host-name}:${broker-port},PLAINTEXT_HOST://localhost:${broker-internal-port}`
         - <- `KAFKA_ZOOKEEPER_CONNECT=${zookeeper-connects}`
