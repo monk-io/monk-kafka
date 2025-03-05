@@ -163,7 +163,7 @@ kafka-common:
       type: int
       value: 2181
     kafka-image:
-      value: <- $kafka-image-tag default("latest1")
+      value: <- $kafka-image-tag default("latest")
       type: string
 
 kafka-1:
