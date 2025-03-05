@@ -53,7 +53,7 @@ zookeeper-common:
       type: int
       value: 2181
     zookeeper-image:
-      value: <- $zookeeper-image-tag default("7.2.1")
+      value: <- $zookeeper-image-tag default("latest")
       type: string
 
 zookeeper-1:
@@ -163,7 +163,7 @@ kafka-common:
       type: int
       value: 2181
     kafka-image:
-      value: <- $kafka-image-tag default("7.2.1")
+      value: <- $kafka-image-tag default("latest1")
       type: string
 
 kafka-1:
