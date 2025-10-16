@@ -1,0 +1,147 @@
+---
+title: Apache Kafka
+description: Ready-to-run Apache Kafka container stack you can run directly or inherit to integrate a distributed event streaming platform into your infrastructure.
+primary_category: messaging
+tags: [kafka, messaging, event-streaming, template, runnable, stack, distributed, pub-sub]
+integration_type: template
+hosting_models: [self-hosted]
+website_url: https://kafka.apache.org/
+docs_url: https://kafka.apache.org/documentation/
+publisher: monk.io
+---
+
+## Overview
+
+This template provides a production‑ready Apache Kafka stack as a Monk runnable. You can:
+
+- Run it directly to get a managed Kafka cluster with ZooKeeper coordination
+- Inherit it in your own runnable to seamlessly add event streaming capabilities to your stack
+
+Apache Kafka is a distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
+
+## What this template manages
+
+- Kafka broker containers (`confluentinc/cp-kafka` image, configurable tag)
+- ZooKeeper ensemble for cluster coordination (`confluentinc/cp-zookeeper` image, configurable tag)
+- Network services on ports 9092 (Kafka) and 2181 (ZooKeeper)
+- Persistent volumes for Kafka data and ZooKeeper state
+- Cluster configuration and topic management
+
+## Quick start (run directly)
+
+1) Load templates
+
+```bash
+monk load MANIFEST
+```
+
+2) Run Kafka stack with defaults
+
+```bash
+monk run kafka/stack
+```
+
+3) Customize configuration (recommended via inheritance)
+
+Running directly uses the defaults defined in this template's `variables`. For production use, inherit and configure:
+
+- Preferred: inherit and set variables as shown below
+- Alternative: fork/clone and edit the `variables` in `kafka.yaml` and `stack.yaml`, then `monk load MANIFEST` and run
+
+Once started, connect to `localhost:9092` (or the runnable hostname inside Monk networks) to produce and consume messages.
+
+## Configuration
+
+Key variables you can customize in this template:
+
+```yaml
+variables:
+  kafka-image-tag: "7.2.1"                # Kafka container image tag
+  zookeeper-image-tag: "7.2.1"            # ZooKeeper container image tag
+  kafka-port: 9092                        # Kafka broker port
+  zookeeper-port: 2181                    # ZooKeeper client port
+  kafka-advertised-listeners: "..."       # KAFKA_ADVERTISED_LISTENERS
+  kafka-broker-id: 1                      # KAFKA_BROKER_ID
+  kafka-log-retention-hours: 168          # Log retention (hours)
+  kafka-num-partitions: 1                 # Default number of partitions
+```
+
+Data is persisted under `${monk-volume-path}/kafka` and `${monk-volume-path}/zookeeper` on the host.
+
+## Use by inheritance (recommended for apps)
+
+Inherit the Kafka stack in your application and declare a connection. Example:
+
+```yaml
+namespace: myapp
+messaging:
+  defines: runnable
+  inherits: kafka/stack
+api:
+  defines: runnable
+  containers:
+    api:
+      image: myorg/api
+  connections:
+    kafka:
+      runnable: messaging
+      service: kafka
+  variables:
+    kafka-host:
+      value: <- connection-hostname("kafka")
+    kafka-port:
+      value: <- connection-port("kafka")
+```
+
+Then run your app group:
+
+```bash
+monk run myapp/api
+```
+
+## Ports and connectivity
+
+- Service: `kafka` on TCP port `9092` (broker)
+- Service: `zookeeper` on TCP port `2181` (coordination)
+- From other runnables in the same process group, use `connection-hostname("<connection-name>")` to resolve the Kafka broker host
+- External clients can connect via the advertised listeners configuration
+
+## Persistence and configuration
+
+- Kafka data path: `${monk-volume-path}/kafka:/var/lib/kafka/data`
+- ZooKeeper data path: `${monk-volume-path}/zookeeper:/var/lib/zookeeper`
+- Ensure the host volumes are writable by the container user
+
+## Features
+
+- High-throughput messaging (millions of messages per second)
+- Fault-tolerant storage with replication
+- Stream processing (Kafka Streams)
+- Scalable architecture (horizontal scaling)
+- Exactly-once semantics
+- Multiple consumer groups
+- Built-in partitioning for parallelism
+
+## Related templates
+
+- Use with microservices for async communication
+- Combine with stream processing frameworks (Kafka Streams, Flink, Spark Streaming)
+- Integrate with monitoring (`prometheus-grafana/`) for metrics and alerting
+- Pair with schema registry for data governance
+
+## Troubleshooting
+
+- Ensure ZooKeeper is running before Kafka starts. The stack handles this dependency automatically.
+- If connection fails, verify `KAFKA_ADVERTISED_LISTENERS` matches your network configuration
+- For external access, ensure firewall rules allow traffic on port 9092
+- Check logs:
+
+```bash
+monk logs -l 500 -f kafka/stack
+```
+
+- To check ZooKeeper separately:
+
+```bash
+monk logs -l 500 -f kafka/zookeeper
+```
