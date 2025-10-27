@@ -26,6 +26,10 @@ zookeeper-common:
       exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
     period: 10
     initialDelay: 5
+  liveness:
+    code: |
+      exec("zookeeper", "/usr/bin/bash", "-c", "echo 'ruok' | nc -w 2 localhost 2181 | grep imok") "imok" contains?
+    period: 60
   metadata:
     name: Apache Zookeper
     description: |
